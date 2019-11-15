@@ -1,0 +1,27 @@
+type Activity {
+    id: ID!
+    type: ActivityType!
+    appointments: [Appointment!]!
+    exclusive: Boolean!
+    parent: Activity
+}
+
+type Appointment {
+    id: ID!
+    type: AppointmentType!
+    schedule: Schedule!
+    activity: Activity!
+}
+
+type Schedule {
+    interval: IntervalType
+    during: DuringType
+    from: GraphQLDateTime!
+    to: GraphQLDateTime!
+}
+
+type User {
+    id: ID!
+    activities(type: ActivityType!): [Activity!]!
+    appointments(from: GraphQLDateTime, to: GraphQLDateTime): [Appointment!]!
+}

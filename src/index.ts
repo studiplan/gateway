@@ -1,17 +1,25 @@
-import { GraphQLServer } from 'graphql-yoga'
+import { GraphQLServer } from 'graphql-yoga';
+import typeDefs from './typedefs/schema.gql';
 
-
-const typeDefs = `
-  type Query {
-    hello(name: String): String!
-  }
-`
 
 const resolvers = {
-  Query: {
-    hello: (_: any, { name }: { name: any }) => `Hello ${name || 'World'}`,
-  },
-}
+	Schedule: {
+		__resolveType(obj: any, context: any, info: any) {
+			if(obj.interval){
+			  return 'Reoccurring';
+			} else {
+				return 'Onetime';
+			}
+		  }
+	}
+};
 
-const server = new GraphQLServer({ typeDefs, resolvers })
-server.start(() => console.log('Server is running on localhost:4000'))
+const server = new GraphQLServer({
+	typeDefs,
+	resolvers,
+	mocks: {
+		GraphQLDateTime: () => new Date().toISOString()
+	}
+});
+
+server.start(() => console.log('Server is running on localhost:4000'));

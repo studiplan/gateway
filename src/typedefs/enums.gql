@@ -1,0 +1,28 @@
+enum ActivityType {
+    UNIVERSITY
+    FACULTY
+    COURSE
+    GROUPS
+}
+
+enum AppointmentType {
+    LECTURE
+    EXERCISE
+    TRAINING
+}
+
+enum IntervalType {
+    MONDAYS
+    TUESDAYS
+    WEDNESDAYS
+    THURSDAYS
+    FRIDAYS
+    SATURDAYS
+    SUNDAYS
+}
+
+enum DuringType {
+    WINTER_SEMESTER
+    SUMMER_SEMESTER
+    ALWAYS
+}
