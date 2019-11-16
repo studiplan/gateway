@@ -1,23 +1,23 @@
 input AppointmentInput {
-  type: AppointmentType!
-  schedule: ScheduleInput!
-  activity: ID!
+	type: AppointmentType!
+	schedule: ScheduleInput!
+	activity: ID!
 }
 
 input ScheduleInput {
-    interval: IntervalType
-    during: DuringType
-    from: GraphQLDateTime!
-    to: GraphQLDateTime!
+	interval: IntervalType
+	during: DuringType
+	from: GraphQLDateTime!
+	to: GraphQLDateTime!
 }
 
 input ActivityInput {
-    type: ActivityType!
-    exclusive: Boolean!
-    parent: ID!
+	type: ActivityType!
+	exclusive: Boolean!
+	parent: ID!
 }
 
 input LoginInput {
-    username: String!
-    password: String!
+	username: String!
+	password: String!
 }
