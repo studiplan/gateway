@@ -1,20 +1,10 @@
 import { GraphQLServer } from 'graphql-yoga';
 import typeDefs from './typedefs/schema.gql';
-import { appointments, activities } from './mocks'
+import { appointments, activities } from './mocks';
 import { ContextParameters } from 'graphql-yoga/dist/types';
 
 
-const resolvers = {
-	Schedule: {
-		__resolveType(obj: any, context: any, info: any) {
-			if(obj.interval){
-			  return 'Reoccurring';
-			} else {
-				return 'Onetime';
-			}
-		  }
-	}
-};
+const resolvers = {};
 
 
 

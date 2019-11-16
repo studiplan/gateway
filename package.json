@@ -6,9 +6,9 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"start": "npm run prod",
-		"build": "babel src -d dist --extensions \".ts,.js\" --ignore '**/*.test.*' --ignore '**/__test__/**/*'",
+		"build": "babel src -d dist --extensions \".ts,.js,.gql\" --ignore '**/*.test.*' --ignore '**/__test__/**/*'",
 		"prod": "node dist/index.js",
-		"dev": "npm run clean:cache && babel-node src/index.ts --extensions \".ts,.js\"",
+		"dev": "npm run clean:cache && babel-node src/index.ts --extensions \".ts,.js,.gql\"",
 		"watch": "nodemon --ext ts,js,gql --watch src --exec npm run dev",
 		"watch:docker": "npm run watch -- --legacy-watch",
 		"test": "npm run lint && npm run type-check && npm run build",

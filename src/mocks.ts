@@ -1,4 +1,4 @@
-import { Activity, ActivityType, Appointment, AppointmentType, IntervalType, DuringType } from "./generated/graphql";
+import { Activity, ActivityType, Appointment, AppointmentType, IntervalType, DuringType } from './generated/graphql';
 
 
 const activities: Array<Partial<Activity>> = [
@@ -66,4 +66,4 @@ const appointments: Array<Partial<Appointment>> = [
 
 activities.forEach(a => a.appointments = appointments as Array<Appointment>);
 
-export { activities, appointments }
+export { activities, appointments };
