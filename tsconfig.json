@@ -61,7 +61,7 @@
   },
   "include": [
     "src/**/*",
-    "schema-server.ts"
+    "generator.ts"
   ],
   "exclude": [
     "node_modules"

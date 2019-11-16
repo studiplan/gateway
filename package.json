@@ -18,7 +18,7 @@
 		"type-check": "tsc --noEmit",
 		"type-check:watch": "npm run type-check -- --watch",
 		"clean:cache": "rm -rf ./node_modules/.cache/@babel",
-		"generate": "graphql-codegen --config codegen.yml"
+		"generate": "npm run clean:cache && babel-node generator.ts --extensions .ts,.js,.gql"
 	},
 	"repository": {
 		"type": "git",
@@ -52,9 +52,7 @@
 		"nodemon": "^1.19.3",
 		"typescript": "^3.6.4",
 		"@graphql-codegen/typescript": "1.8.3",
-		"@graphql-codegen/typescript-resolvers": "1.8.3",
-		"@graphql-codegen/typescript-document-nodes": "1.8.3",
-		"@graphql-codegen/introspection": "1.8.3"
+		"@graphql-codegen/typescript-resolvers": "1.8.3"
 	},
 	"dependencies": {
 		"@babel/runtime": "^7.7.2",

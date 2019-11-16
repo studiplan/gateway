@@ -5,7 +5,7 @@ input AppointmentInput {
 }
 
 input ScheduleInput {
-	interval: IntervalType
+	on: Weekday
 	during: DuringType
 	from: GraphQLDateTime!
 	to: GraphQLDateTime!

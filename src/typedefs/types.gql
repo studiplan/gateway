@@ -4,6 +4,7 @@ type Activity {
 	name: String!
 	appointments: [Appointment!]!
 	exclusive: Boolean!
+	during: DuringType!
 	parent: Activity
 }
 
@@ -15,8 +16,7 @@ type Appointment {
 }
 
 type Schedule {
-	interval: IntervalType
-	during: DuringType
+	on: Weekday
 	from: GraphQLDateTime!
 	to: GraphQLDateTime!
 }
