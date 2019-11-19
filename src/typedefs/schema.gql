@@ -3,13 +3,14 @@
 #import "./inputs.gql"
 #import "./types.gql"
 
+
 type Query {
 	activities(parentId: ID!): [Activity!]!
 	user(userId: ID!): User!
 }
 
 type Mutation {
-	addAppointment(input: AppointmentInput): Appointment!
-	addActivity(input: ActivityInput): Activity!
-	login(input: LoginInput): User!
+	addAppointment(input: AppointmentInput!): Appointment!
+	addActivity(input: ActivityInput!): Activity!
+	login(input: LoginInput!): User!
 }

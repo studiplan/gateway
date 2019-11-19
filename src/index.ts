@@ -6,8 +6,6 @@ import { ContextParameters } from 'graphql-yoga/dist/types';
 
 const resolvers = {};
 
-
-
 const server = new GraphQLServer({
 	typeDefs,
 	resolvers,

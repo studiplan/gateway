@@ -1,10 +1,11 @@
-import { Activity, ActivityType, Appointment, AppointmentType, IntervalType, DuringType } from './generated/graphql';
+import { Activity, ActivityType, Appointment, AppointmentType, Weekday, DuringType } from './generated';
 
 
 const activities: Array<Partial<Activity>> = [
 	{
 		// id: 'activity1',
 		type: ActivityType.Course,
+		during: DuringType.Always,
 		name: 'Programming help for all',
 		appointments: [],
 		exclusive: false,
@@ -13,6 +14,7 @@ const activities: Array<Partial<Activity>> = [
 	{
 		// id: 'activity2',
 		type: ActivityType.Course,
+		during: DuringType.Always,
 		name: 'but silvan is better',
 		appointments: [],
 		exclusive: false,
@@ -21,6 +23,7 @@ const activities: Array<Partial<Activity>> = [
 	{
 		// id: 'activity2',
 		type: ActivityType.Course,
+		during: DuringType.Always,
 		name: 'felix is okay at programming',
 		appointments: [],
 		exclusive: false,
@@ -33,8 +36,7 @@ const appointments: Array<Partial<Appointment>> = [
 		// id: 'appointment1',
 		type: AppointmentType.Lecture,
 		schedule: {
-			interval: IntervalType.Mondays,
-			during: DuringType.Always,
+			on: Weekday.Monday,
 			from: new Date('2019-01-01T08:00:00'),
 			to: new Date('2019-01-01T10:00:00')
 		},
@@ -44,8 +46,7 @@ const appointments: Array<Partial<Appointment>> = [
 		// id: 'appointment1',
 		type: AppointmentType.Lecture,
 		schedule: {
-			interval: IntervalType.Wednesdays,
-			during: DuringType.Always,
+			on: Weekday.Wednesday,
 			from: new Date('2019-01-01T08:00:00'),
 			to: new Date('2019-01-01T10:00:00')
 		},
@@ -55,8 +56,7 @@ const appointments: Array<Partial<Appointment>> = [
 		// id: 'appointment2',
 		type: AppointmentType.Lecture,
 		schedule: {
-			interval: IntervalType.Fridays,
-			during: DuringType.Always,
+			on: Weekday.Friday,
 			from: new Date('2019-01-01T10:15:00'),
 			to: new Date('2019-01-01T12:00:00')
 		},

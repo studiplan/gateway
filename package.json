@@ -7,8 +7,8 @@
 	"scripts": {
 		"start": "npm run prod",
 		"build": "babel src -d dist --extensions \".ts,.js,.gql\" --ignore '**/*.test.*' --ignore '**/__test__/**/*'",
-		"prod": "node dist/index.js",
-		"dev": "npm run clean:cache && babel-node src/index.ts --extensions \".ts,.js,.gql\"",
+		"prod": "node -r node_modules/dotenv/config dist/index.js",
+		"dev": "npm run clean:cache && babel-node -r node_modules/dotenv/config src/index.ts --extensions \".ts,.js,.gql\"",
 		"watch": "nodemon --ext ts,js,gql --watch src --exec npm run dev",
 		"watch:docker": "npm run watch -- --legacy-watch",
 		"test": "npm run lint && npm run type-check && npm run build",
@@ -18,7 +18,10 @@
 		"type-check": "tsc --noEmit",
 		"type-check:watch": "npm run type-check -- --watch",
 		"clean:cache": "rm -rf ./node_modules/.cache/@babel",
-		"generate": "npm run clean:cache && babel-node generator.ts --extensions .ts,.js,.gql"
+		"generate": "npm run clean:cache && babel-node generator.ts --extensions .ts,.js,.gql",
+		"generate:watch": "npm run generate --watch",
+		"prestart": "npm run generate",
+		"predev": "npm run generate"
 	},
 	"repository": {
 		"type": "git",
@@ -56,7 +59,9 @@
 	},
 	"dependencies": {
 		"@babel/runtime": "^7.7.2",
+		"dotenv": "^8.2.0",
 		"graphql-iso-date": "^3.6.1",
-		"graphql-yoga": "^1.18.3"
+		"graphql-yoga": "^1.18.3",
+		"neo4j-driver": "^1.7.6"
 	}
 }
