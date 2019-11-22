@@ -13,7 +13,9 @@ input ScheduleInput {
 
 input ActivityInput {
 	type: ActivityType!
+	name: String!
 	exclusive: Boolean!
+	during: DuringType!
 	parent: ID!
 }
 

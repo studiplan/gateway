@@ -62,6 +62,6 @@
 		"dotenv": "^8.2.0",
 		"graphql-iso-date": "^3.6.1",
 		"graphql-yoga": "^1.18.3",
-		"neo4j-driver": "^1.7.6"
+		"neo4j-driver": "^4.0.0-beta01"
 	}
 }

@@ -1,28 +1,28 @@
 enum ActivityType {
-	UNIVERSITY
-	FACULTY
-	COURSE
-	GROUPS
+	University
+	Faculty
+	Course
+	Groups
 }
 
 enum AppointmentType {
-	LECTURE
-	EXERCISE
-	TRAINING
+	Lecture
+	Exercise
+	Training
 }
 
 enum Weekday {
-	MONDAY
-	TUESDAY
-	WEDNESDAY
-	THURSDAY
-	FRIDAY
-	SATURDAY
-	SUNDAY
+	Monday
+	Tuesday
+	Wednesday
+	Thursday
+	Friday
+	Saturday
+	Sunday
 }
 
 enum DuringType {
-	WINTER_SEMESTER
-	SUMMER_SEMESTER
-	ALWAYS
+	WinterSemester
+	SummerSemester
+	Always
 }
