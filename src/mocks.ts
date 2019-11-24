@@ -35,31 +35,25 @@ const appointments: Array<Partial<Appointment>> = [
 	{
 		// id: 'appointment1',
 		type: AppointmentType.Lecture,
-		schedule: {
-			on: Weekday.Monday,
-			from: new Date('2019-01-01T08:00:00'),
-			to: new Date('2019-01-01T10:00:00')
-		},
+		on: Weekday.Monday,
+		from: new Date('2019-01-01T08:00:00'),
+		to: new Date('2019-01-01T10:00:00'),
 		activity: activities[0] as Activity
 	},
 	{
 		// id: 'appointment1',
 		type: AppointmentType.Lecture,
-		schedule: {
-			on: Weekday.Wednesday,
-			from: new Date('2019-01-01T08:00:00'),
-			to: new Date('2019-01-01T10:00:00')
-		},
+		on: Weekday.Wednesday,
+		from: new Date('2019-01-01T08:00:00'),
+		to: new Date('2019-01-01T10:00:00'),
 		activity: activities[1] as Activity
 	},
 	{
 		// id: 'appointment2',
 		type: AppointmentType.Lecture,
-		schedule: {
-			on: Weekday.Friday,
-			from: new Date('2019-01-01T10:15:00'),
-			to: new Date('2019-01-01T12:00:00')
-		},
+		on: Weekday.Friday,
+		from: new Date('2019-01-01T10:15:00'),
+		to: new Date('2019-01-01T12:00:00'),
 		activity: activities[2] as Activity
 	}
 ];

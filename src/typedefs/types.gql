@@ -11,14 +11,10 @@ type Activity {
 type Appointment {
 	id: ID!
 	type: AppointmentType!
-	schedule: Schedule!
-	activity: Activity!
-}
-
-type Schedule {
 	on: Weekday
 	from: GraphQLDateTime!
 	to: GraphQLDateTime!
+	activity: Activity!
 }
 
 type User {
