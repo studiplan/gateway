@@ -1,11 +1,14 @@
 import { GraphQLServer } from 'graphql-yoga';
-import typeDefs from './typedefs/schema.gql';
-import resolvers from './resolvers'
 import neo4j from 'neo4j-driver';
 import { IMiddleware } from 'graphql-middleware';
-import RxSession from 'neo4j-driver/types/session-rx';
-import { queryNode, yn, debugSession } from './helper';
+import { ContextParameters } from 'graphql-yoga/dist/types';
+
+import { queryNode, yn, debugSession, uuid } from './helper';
 import { activities, appointments } from './mocks';
+import typeDefs from './typedefs/schema.gql';
+import resolvers from './resolvers'
+import { gatewayLog, sessionLog, gqlyogaLog } from './loggers';
+import { DBSession } from './types';
 
 
 const db = neo4j.driver(
@@ -14,16 +17,30 @@ const db = neo4j.driver(
 );
 
 const dbUtilities: IMiddleware = async (resolve, root, args, context, info) => {
-	const rxSession: RxSession = yn(process.env.DEBUG) ? debugSession(context.db.rxSession()) : context.db.rxSession();
-	const result = await resolve(root, args, { ...context, rxSession, queryNode: queryNode(rxSession) }, info)
+	const rxSession = context.db.rxSession();
+	rxSession.uuid = uuid();
+	const session: DBSession = yn(process.env.DEBUG) ? debugSession(rxSession) : rxSession;
+	sessionLog.info(`created DB session`, { uuid: rxSession.uuid });
+	const result = await resolve(root, args, { ...context, rxSession, queryNode: queryNode(session) }, info);
 	await rxSession.close().toPromise();
+	sessionLog.info(`closed DB session}`, { uuid: rxSession.uuid });
 	return result;
 };
 
 const server = new GraphQLServer({
 	typeDefs,
 	resolvers,
-	context: { db },
+	context: ({ request }: ContextParameters) => {
+		gatewayLog.info(`
+		Request: ${request.protocol} ${request.method} ${request.path}
+		from: ${request.hostname} (${request.ip})
+		`);
+		gatewayLog.debug(`
+		with params: ${JSON.stringify(request.params)}
+		with body: ${JSON.stringify(request.body)}
+		`);
+		return { db };
+	},
 	middlewares: [ dbUtilities ],
 	mocks: yn(process.env.DB_MOCK) ? {
 		Query: () => ({
@@ -37,16 +54,19 @@ const server = new GraphQLServer({
 });
 
 process.on('SIGINT', async function() {
-	console.log("Waiting for DB connection to close...");
+	gatewayLog.info('Waiting for DB connection to close...');
 	await db.close();
-	console.log("DB connection has closed.");
+	gatewayLog.info('DB connection has closed.');
 	process.exit();
 });
 
+// IDEA: ping db before starting server if mock === false. If no db: Crit log msg, dont start server.
+
 server.start({
 		port: process.env.PORT,
-		playground: process.env.PLAYGROUND
-	}, () => console.log(`
+		playground: process.env.PLAYGROUND,
+		logFunction: (msg: any) => gqlyogaLog.debug(JSON.stringify(msg))
+	}, () => gatewayLog.info(`
 		Server is running on localhost:${process.env.PORT}
 		Playground is hosted at: '${process.env.PLAYGROUND}'
 		Connected to DB at ${process.env.DB_HOST + ':' + process.env.DB_PORT}

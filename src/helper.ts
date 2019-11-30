@@ -1,8 +1,11 @@
 import { Node, Record } from 'neo4j-driver';
+import { Observable, EMPTY } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+
 import { ActivityInput, AppointmentInput } from './generated';
-import RxSession from 'neo4j-driver/types/session-rx';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { sessionLog } from './loggers';
+import { DBSession } from './types';
+
 
 export const fromNode = <T>(node: Node): T => ({
 	id: node.identity.toString(10),
@@ -26,25 +29,40 @@ export const fromInput = (input: NodeInput): string => {
 	return `${type ? `:${type} ` : ''}{ ${Object.entries(props).map(asProperty).join(', ')} }`;
 };
 
-export const debugSession = (session: RxSession): RxSession => ({
+/**
+ * This function allows to wrap/intercept calls to rxSession for logging and debugging purposes.
+ * @param session session to proxy
+ */
+export const debugSession = (session: DBSession): DBSession => ({
 	run(...args: any[]) {
-		console.log(`running query: ${args}`);
+		sessionLog.info(`running query: ${args}`, { uuid: session.uuid });
 		// @ts-ignore
 		return session.run(...args);
 	},
-	beginTransaction(...args: any[]){ return session.beginTransaction(...args); },
+	beginTransaction(...args: any[]){
+		sessionLog.info(`running query: ${args}`), { uuid: session.uuid };
+		return session.beginTransaction(...args); },
 	lastBookmark(){ return session.lastBookmark(); },
 	// @ts-ignore
 	readTransaction(...args: any[]){ return session.readTransaction(...args); },
 	// @ts-ignore
 	writeTransaction(...args: any[]){ return session.writeTransaction(...args); },
-	close(){ return session.close(); }
+	close(){ return session.close(); },
+	uuid: session.uuid
 });
 
-export const queryNode = (session: RxSession): (query: string) => Observable<Record> => {
+/**
+ * This function creates a helper that extracts the first returned variable from query and constructs given type from it.
+ * @param session session to create helper for
+ */
+export const queryNode = (session: DBSession): (query: string) => Observable<Record> => {
 	return <T>(query: string) => session.run(query).records().pipe(
 		map(record => record.get(record.keys[0])),
 		map(node => fromNode<T>(node)),
+		catchError(err => {
+			sessionLog.error(`error in query: ${err}`, { uuid: session.uuid });
+			return EMPTY;
+		}),
 	);
 };
 
@@ -58,4 +76,6 @@ export const yn = (input: string | boolean | number | undefined): boolean => {
 	} else {
 		throw(new Error(`yn | unexpected input: ${input}`));
 	}
-}
+};
+
+export const uuid = (a: any = undefined) => a ? (a^Math.random()*16>>a/4).toString(16) : (''+1e7+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, uuid);
