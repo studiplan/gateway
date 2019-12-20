@@ -7,8 +7,8 @@
 	"scripts": {
 		"start": "npm run prod",
 		"build": "babel src -d dist --extensions \".ts,.js,.gql\" --ignore '**/*.test.*' --ignore '**/__test__/**/*'",
-		"prod": "node -r node_modules/dotenv/config dist/index.js",
-		"dev": "npm run clean:cache && babel-node -r node_modules/dotenv/config src/index.ts --extensions \".ts,.js,.gql\"",
+		"prod": "node dist/index.js",
+		"dev": "npm run clean:cache && babel-node -r dotenv/config src/index.ts --extensions \".ts,.js,.gql\"",
 		"watch": "nodemon --ext ts,js,gql --watch src --exec npm run dev",
 		"watch:docker": "npm run watch -- --legacy-watch",
 		"test": "npm run lint && npm run type-check && npm run build",
