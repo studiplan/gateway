@@ -6,13 +6,21 @@ import { ActivityInput, AppointmentInput } from './generated';
 import { sessionLog } from './loggers';
 import { DBSession } from './types';
 
-
+/**
+ * Transforms neo4j node into javascript object.
+ * @param node neo4j node.
+ */
 export const fromNode = <T>(node: Node): T => ({
 	id: node.identity.toString(10),
 	type: node.labels[0],
 	...node.properties,
 }) as unknown as T;
 
+
+/**
+ * Builds neo4j description of a property.
+ * @param tuple a [key, value] tuple to transform.
+ */
 const asProperty = ([key, value]: [string, unknown]): string => {
 	switch (typeof value) {
 		case 'string':
@@ -24,6 +32,10 @@ const asProperty = ([key, value]: [string, unknown]): string => {
 
 type NodeInput = Partial<ActivityInput | AppointmentInput>;
 
+/**
+ * Transforms a javascript object into a neo4j node string.
+ * @param input object that resembles a neo4j-node.
+ */
 export const fromInput = (input: NodeInput): string => {
 	const { type, ...props } = input;
 	return `${type ? `:${type} ` : ''}{ ${Object.entries(props).map(asProperty).join(', ')} }`;
@@ -31,7 +43,7 @@ export const fromInput = (input: NodeInput): string => {
 
 /**
  * This function allows to wrap/intercept calls to rxSession for logging and debugging purposes.
- * @param session session to proxy
+ * @param session session to proxy.
  */
 export const debugSession = (session: DBSession): DBSession => ({
 	run(...args: any[]) {
@@ -53,7 +65,7 @@ export const debugSession = (session: DBSession): DBSession => ({
 
 /**
  * This function creates a helper that extracts the first returned variable from query and constructs given type from it.
- * @param session session to create helper for
+ * @param session session to create helper for.
  */
 export const queryNode = (session: DBSession): (query: string) => Observable<Record> => {
 	return <T>(query: string) => session.run(query).records().pipe(
@@ -66,6 +78,10 @@ export const queryNode = (session: DBSession): (query: string) => Observable<Rec
 	);
 };
 
+/**
+ * Transforms common boolean like text/numbers to boolean value.
+ * @param input something resembling a boolean value.
+ */
 export const yn = (input: string | boolean | number | undefined): boolean => {
 	input = String(input).trim();
 
@@ -78,4 +94,9 @@ export const yn = (input: string | boolean | number | undefined): boolean => {
 	}
 };
 
+/**
+ * Generates a v4 UUID.
+ * Code take from https://gist.github.com/jed/982883.
+ * @param a ignore; only used for recusive call to itself.
+ */
 export const uuid = (a: any = undefined) => a ? (a^Math.random()*16>>a/4).toString(16) : (''+1e7+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, uuid);
