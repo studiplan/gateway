@@ -1,0 +1,17 @@
+version: '3'
+services:
+  gateway:
+    image: studiplan/gateway
+    build: .
+    command: ["npm", "run", "watch:docker"]
+    ports:
+      - 4000:80
+    volumes:
+      - ./:/usr/app
+  neodb:
+    image: neo4j
+    volumes:
+      - ./db_data:/data
+    ports:
+      - 7474:7474
+      - 7687:7687

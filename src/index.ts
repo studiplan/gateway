@@ -6,24 +6,34 @@ import { ContextParameters } from 'graphql-yoga/dist/types';
 import { queryNode, yn, debugSession, uuid } from './helper';
 import { activities, appointments } from './mocks';
 import typeDefs from './typedefs/schema.gql';
-import resolvers from './resolvers'
+import resolvers from './resolvers';
 import { gatewayLog, sessionLog, gqlyogaLog } from './loggers';
 import { DBSession } from './types';
 
+const {
+	PORT = 80,
+	PLAYGROUND = false,
+	DB_HOST = 'neodb',
+	DB_PORT = 7687,
+	DB_USER = 'neo4j',
+	DB_PASS = 'neo4j',
+	DB_MOCK = false,
+	DEBUG = false,
+} = process.env;
 
 const db = neo4j.driver(
-	'bolt://' + process.env.DB_HOST + ':' + process.env.DB_PORT,
-	neo4j.auth.basic(process.env.DB_USER!, process.env.DB_PASS!)
+	'bolt://' + DB_HOST + ':' +DB_PORT,
+	neo4j.auth.basic(DB_USER!, DB_PASS!)
 );
 
 const dbUtilities: IMiddleware = async (resolve, root, args, context, info) => {
 	const rxSession = context.db.rxSession();
 	rxSession.uuid = uuid();
-	const session: DBSession = yn(process.env.DEBUG) ? debugSession(rxSession) : rxSession;
-	sessionLog.info(`created DB session`, { uuid: rxSession.uuid });
+	const session: DBSession = yn(DEBUG) ? debugSession(rxSession) : rxSession;
+	sessionLog.info('created DB session', { uuid: rxSession.uuid });
 	const result = await resolve(root, args, { ...context, rxSession, queryNode: queryNode(session) }, info);
 	await rxSession.close().toPromise();
-	sessionLog.info(`closed DB session}`, { uuid: rxSession.uuid });
+	sessionLog.info('closed DB session}', { uuid: rxSession.uuid });
 	return result;
 };
 
@@ -42,7 +52,7 @@ const server = new GraphQLServer({
 		return { db };
 	},
 	middlewares: [ dbUtilities ],
-	mocks: yn(process.env.DB_MOCK) ? {
+	mocks: yn(DB_MOCK) ? {
 		Query: () => ({
 			activities
 		}),
@@ -63,13 +73,13 @@ process.on('SIGINT', async function() {
 // IDEA: ping db before starting server if mock === false. If no db: Crit log msg, dont start server.
 
 server.start({
-		port: process.env.PORT,
-		playground: process.env.PLAYGROUND,
-		logFunction: (msg: any) => gqlyogaLog.debug(JSON.stringify(msg))
-	}, () => gatewayLog.info(`
-		Server is running on localhost:${process.env.PORT}
-		Playground is hosted at: '${process.env.PLAYGROUND}'
-		Connected to DB at ${process.env.DB_HOST + ':' + process.env.DB_PORT}
-		Using mock data: ${yn(process.env.DB_MOCK)}
-		Debugging active: ${yn(process.env.DEBUG)}
+	port: PORT,
+	playground: PLAYGROUND,
+	logFunction: (msg: any) => gqlyogaLog.debug(JSON.stringify(msg))
+}, () => gatewayLog.info(`
+		Server is running on localhost:${PORT}
+		Playground is hosted at: '${PLAYGROUND}'
+		Connected to DB at ${DB_HOST + ':' + DB_PORT}
+		Using mock data: ${yn(DB_MOCK)}
+		Debugging active: ${yn(DEBUG)}
 `));

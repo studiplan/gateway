@@ -34,14 +34,14 @@ docker run \
 ## .env config
 ```
 # DB config
-DB_HOST=<host> (usually 0.0.0.0)
+DB_HOST=<host> (127.0.0.1)
 DB_PORT=<port> (usually 7687)
 DB_USER=<user> (your db user)
 DB_PASS=<password> (your db password)
 DB_MOCK=false (true if working without db)
 
 # Server config
-PORT=4000 (server port)
+PORT=80 (server port)
 PLAYGROUND=/ (gql playground path)
 DEBUG=true (show debug output)
 ```
